@@ -1,4 +1,4 @@
-package app
+package api
 
 import (
 	"github.com/gin-gonic/gin"
@@ -6,6 +6,6 @@ import (
 
 // получение текущего баланса счёта баллов лояльности пользователя
 
-func (app *Application) Balance(c *gin.Context) {
+func (app *Server) Balance(c *gin.Context) {
 
 }

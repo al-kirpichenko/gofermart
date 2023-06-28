@@ -1,4 +1,4 @@
-package app
+package api
 
 import (
 	"github.com/gin-gonic/gin"
@@ -6,6 +6,6 @@ import (
 
 // регистрация пользователя
 
-func (app *Application) Register(c *gin.Context) {
+func (app *Server) Register(c *gin.Context) {
 
 }

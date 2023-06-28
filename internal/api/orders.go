@@ -1,4 +1,4 @@
-package app
+package api
 
 import (
 	"github.com/gin-gonic/gin"
@@ -6,12 +6,18 @@ import (
 
 // загрузка пользователем номера заказа для расчёта
 
-func (app *Application) AddOrder(c *gin.Context) {
+func (app *Server) AddOrder(c *gin.Context) {
 
 }
 
 // получение списка загруженных пользователем номеров заказов, статусов их обработки и информации о начислениях
 
-func (app *Application) GetOrders(c *gin.Context) {
+func (app *Server) GetOrders(c *gin.Context) {
+
+}
+
+// получение информации о расчёте начислений баллов лояльности
+
+func (app *Server) Order(c *gin.Context) {
 
 }

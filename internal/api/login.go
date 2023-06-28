@@ -1,4 +1,4 @@
-package app
+package api
 
 import (
 	"github.com/gin-gonic/gin"
@@ -6,6 +6,6 @@ import (
 
 // аутентификация пользователя
 
-func (app *Application) Login(c *gin.Context) {
+func (app *Server) Login(c *gin.Context) {
 
 }

@@ -1,4 +1,4 @@
-package app
+package api
 
 import (
 	"github.com/gin-gonic/gin"
@@ -6,6 +6,6 @@ import (
 
 // получение информации о выводе средств с накопительного счёта пользователем
 
-func (app *Application) Withdrawals(c *gin.Context) {
+func (app *Server) Withdrawals(c *gin.Context) {
 
 }
