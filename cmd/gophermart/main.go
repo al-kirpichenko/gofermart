@@ -1,15 +1,23 @@
 package main
 
 import (
-	config2 "github.com/al-kirpichenko/gofermart/cmd/gophermart/config"
-	app "github.com/al-kirpichenko/gofermart/internal/app"
-	router "github.com/al-kirpichenko/gofermart/internal/router"
+	"log"
+
+	"github.com/al-kirpichenko/gofermart/cmd/gophermart/config"
+	"github.com/al-kirpichenko/gofermart/internal/app"
+	"github.com/al-kirpichenko/gofermart/internal/router"
 )
 
 func main() {
 
-	config := config2.NewConfig()
-	application := app.NewApp(config)
+	cfg := config.NewConfig()
+	application := app.NewApp(cfg)
 
-	router := router.Router(application)
+	r := router.Router(application)
+
+	err := r.Run(cfg.Host)
+	if err != nil {
+		log.Fatal("dont start it!")
+		return
+	}
 }

@@ -8,7 +8,7 @@ import (
 type Config struct {
 	Host        string `env:"RUN_ADDRESS"`
 	DatabaseURI string `env:"DATABASE_URI"`
-	SysAddress  string `ACCRUAL_SYSTEM_ADDRESS"`
+	SysAddress  string `env:"ACCRUAL_SYSTEM_ADDRESS"`
 }
 
 const (
