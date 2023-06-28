@@ -15,7 +15,7 @@ func main() {
 
 	r := router.Router(application)
 
-	err := r.Run(cfg.Host)
+	err := r.Run(":8080")
 	if err != nil {
 		log.Fatal("dont start it!")
 		return

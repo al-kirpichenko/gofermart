@@ -6,9 +6,9 @@ import (
 )
 
 type Config struct {
-	Host        string `env:"RUN_ADDRESS"`
-	DatabaseURI string `env:"DATABASE_URI"`
-	SysAddress  string `env:"ACCRUAL_SYSTEM_ADDRESS"`
+	ServiceHost    string `env:"RUN_ADDRESS"`
+	DatabaseURI    string `env:"DATABASE_URI"`
+	ServiceAddress string `env:"ACCRUAL_SYSTEM_ADDRESS"`
 }
 
 const (
@@ -25,9 +25,9 @@ func NewConfig() *Config {
 	ps := fmt.Sprintf("host=%s user=%s password=%s dbname=%s sslmode=disable",
 		DBhost, DBuser, DBpassword, DBname)
 
-	flag.StringVar(&config.Host, "a", "localhost:8080", "It's a Host")
+	flag.StringVar(&config.ServiceHost, "a", "localhost:8081", "It's a Host")
 	flag.StringVar(&config.DatabaseURI, "d", ps, "it's conn string")
-	flag.StringVar(&config.SysAddress, "r", "", "It's a FilePATH")
+	flag.StringVar(&config.ServiceAddress, "r", "", "It's a FilePATH")
 
 	return &config
 }
