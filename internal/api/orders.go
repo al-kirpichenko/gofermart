@@ -60,6 +60,8 @@ func (s *Server) AddOrder(ctx *gin.Context) {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"status": "error", "message": "Something bad happened"})
 		return
 	}
+	// тут будет запрос к сервису начисления баллов
+	//TODO запрос к сервесу начисления баллов выполняется асинхронно, пользователю отдаем 202!
 
 }
 
