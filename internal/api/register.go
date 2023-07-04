@@ -52,7 +52,7 @@ func (s *Server) Register(ctx *gin.Context) {
 		return
 	}
 
-	ctx.SetCookie("token", token, jwt.TokenMaxAge*60, "/", "localhost", false, true)
+	ctx.SetCookie("token", token, 10800, "/", "localhost", false, true)
 
 	ctx.JSON(http.StatusOK, gin.H{"status": "success", "message": "the user is registered"})
 

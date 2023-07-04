@@ -1,6 +1,8 @@
 package jwt
 
 import (
+	"fmt"
+	"log"
 	"time"
 
 	"github.com/golang-jwt/jwt/v4"
@@ -11,7 +13,7 @@ type Claims struct {
 	UserID uint
 }
 
-const TokenMaxAge = 60
+const TokenMaxAge = time.Hour * 3
 const SecretKey = "bvaEFBtr5e"
 
 func GenerateToken(uid uint) (string, error) {
@@ -33,4 +35,43 @@ func GenerateToken(uid uint) (string, error) {
 	}
 	// возвращаем строку токена
 	return tokenString, nil
+}
+
+func ValidationToken(tokenString string) bool {
+
+	claims := &Claims{}
+	token, err := jwt.ParseWithClaims(tokenString, claims,
+		func(t *jwt.Token) (interface{}, error) {
+			if _, ok := t.Method.(*jwt.SigningMethodHMAC); !ok {
+				return nil, fmt.Errorf("unexpected signing method: %v", t.Header["alg"])
+			}
+			return []byte(SecretKey), nil
+		})
+	if err != nil {
+		return false
+	}
+
+	if !token.Valid {
+		return false
+	}
+
+	return true
+}
+
+func GetUserIDFromToken(tokenString string) (uint, error) {
+	// создаём экземпляр структуры с утверждениями
+
+	claims := &Claims{}
+	_, err := jwt.ParseWithClaims(tokenString, claims,
+		func(t *jwt.Token) (interface{}, error) {
+			if _, ok := t.Method.(*jwt.SigningMethodHMAC); !ok {
+				return nil, fmt.Errorf("unexpected signing method: %v", t.Header["alg"])
+			}
+			return []byte(SecretKey), nil
+		})
+	if err != nil {
+		log.Println(err)
+		return 0, err
+	}
+	return claims.UserID, nil
 }
