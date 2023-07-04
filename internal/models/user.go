@@ -1,9 +1,13 @@
 package models
 
+import (
+	"gorm.io/gorm"
+)
+
 type User struct {
-	ID        int
-	Login     string
-	Password  string
+	gorm.Model
+	Login     string `gorm:"size:255;not null;unique" json:"login"`
+	Password  string `gorm:"size:255;not null;unique" json:"password"`
 	Balance   int
 	Withdrawn int
 }

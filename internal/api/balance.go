@@ -6,6 +6,6 @@ import (
 
 // получение текущего баланса счёта баллов лояльности пользователя
 
-func (app *Server) Balance(c *gin.Context) {
+func (s *Server) Balance(c *gin.Context) {
 
 }

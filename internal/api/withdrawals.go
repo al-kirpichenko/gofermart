@@ -6,6 +6,6 @@ import (
 
 // получение информации о выводе средств с накопительного счёта пользователем
 
-func (app *Server) Withdrawals(c *gin.Context) {
+func (s *Server) Withdrawals(c *gin.Context) {
 
 }

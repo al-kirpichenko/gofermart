@@ -1,20 +1,25 @@
 package database
 
 import (
-	"github.com/jinzhu/gorm"
+	"log"
 
 	"github.com/al-kirpichenko/gofermart/internal/models"
+
+	"gorm.io/gorm"
+
+	"gorm.io/driver/postgres"
 )
 
 func InitDB(conf string) *gorm.DB {
-	db, err := gorm.Open("pgx", conf)
+
+	db, err := gorm.Open(postgres.Open(conf), &gorm.Config{})
 
 	if err != nil {
-		panic("Failed to connect to database!")
+		log.Fatal("Failed to connect to database!")
 	}
 
 	db.AutoMigrate(&models.User{})
-	db.AutoMigrate(&models.Orders{})
+	db.AutoMigrate(&models.Order{})
 
 	return db
 }

@@ -1,11 +1,11 @@
 package api
 
 import (
-	"github.com/jinzhu/gorm"
+	"gorm.io/gorm"
 
 	"go.uber.org/zap"
 
-	"github.com/al-kirpichenko/gofermart/cmd/gophermart/config"
+	"github.com/al-kirpichenko/gofermart/cmd/gofermart/config"
 	"github.com/al-kirpichenko/gofermart/internal/database"
 )
 

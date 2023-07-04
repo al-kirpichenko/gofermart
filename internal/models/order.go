@@ -1,9 +1,13 @@
 package models
 
-import "time"
+import (
+	"time"
+
+	"gorm.io/gorm"
+)
 
 type Order struct {
-	ID       int
+	gorm.Model
 	Number   string
 	Status   string
 	Accrual  int
