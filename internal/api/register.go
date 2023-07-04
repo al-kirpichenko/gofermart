@@ -8,6 +8,7 @@ import (
 
 	"github.com/al-kirpichenko/gofermart/internal/models"
 	"github.com/al-kirpichenko/gofermart/internal/services"
+	"github.com/al-kirpichenko/gofermart/internal/services/jwt"
 )
 
 // регистрация пользователя
@@ -43,6 +44,15 @@ func (s *Server) Register(ctx *gin.Context) {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"status": "error", "message": "Something bad happened"})
 		return
 	}
+
+	token, err := jwt.GenerateToken(newUser.ID)
+
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"status": "fail", "message": err.Error()})
+		return
+	}
+
+	ctx.SetCookie("token", token, jwt.TokenMaxAge*60, "/", "localhost", false, true)
 
 	ctx.JSON(http.StatusOK, gin.H{"status": "success", "message": "the user is registered"})
 

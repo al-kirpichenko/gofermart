@@ -1,4 +1,4 @@
-package services
+package jwt
 
 import (
 	"time"
@@ -8,19 +8,19 @@ import (
 
 type Claims struct {
 	jwt.RegisteredClaims
-	UserID int
+	UserID uint
 }
 
-const TokenExp = time.Hour * 3
+const TokenMaxAge = 60
 const SecretKey = "bvaEFBtr5e"
 
-func GenerateToken(uid int) (string, error) {
+func GenerateToken(uid uint) (string, error) {
 
 	// создаём новый токен с алгоритмом подписи HS256 и утверждениями — Claims
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, Claims{
 		RegisteredClaims: jwt.RegisteredClaims{
 			// когда создан токен
-			ExpiresAt: jwt.NewNumericDate(time.Now().Add(TokenExp)),
+			ExpiresAt: jwt.NewNumericDate(time.Now().Add(TokenMaxAge)),
 		},
 		// собственное утверждение
 		UserID: uid,

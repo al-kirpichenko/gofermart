@@ -7,6 +7,7 @@ import (
 
 	"github.com/al-kirpichenko/gofermart/internal/models"
 	"github.com/al-kirpichenko/gofermart/internal/services"
+	"github.com/al-kirpichenko/gofermart/internal/services/jwt"
 )
 
 // аутентификация пользователя
@@ -33,4 +34,14 @@ func (s *Server) Login(ctx *gin.Context) {
 		return
 	}
 
+	token, err := jwt.GenerateToken(user.ID)
+
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"status": "fail", "message": err.Error()})
+		return
+	}
+
+	ctx.SetCookie("token", token, jwt.TokenMaxAge*60, "/", "localhost", false, true)
+
+	ctx.JSON(http.StatusOK, gin.H{"status": "success", "token": token})
 }
