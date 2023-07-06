@@ -66,17 +66,22 @@ func (s *Server) AddOrder(ctx *gin.Context) {
 	// тут будет запрос к сервису начисления баллов
 	//TODO запрос к сервесу начисления баллов выполняется асинхронно
 
-	loyalty, err := accrual.GetLoyalty(newOrder.Number, s.config.ServiceAddress)
-	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"status": "error", "message": "no response from the accrual service"})
-		return
-	}
 	ctx.JSON(http.StatusAccepted, gin.H{"status": "success", "message": "the order has been accepted"})
 
-	newOrder.Accrual = loyalty.Accrual
-	newOrder.Status = loyalty.Status
+	go func(order *models.Order, serviceAddress string) {
 
-	s.DB.Save(&newOrder)
+		loyalty, err := accrual.GetLoyalty(order.Number, serviceAddress)
+		if err != nil {
+			ctx.JSON(http.StatusInternalServerError, gin.H{"status": "error", "message": "no response from the accrual service"})
+			return
+		}
+		ctx.JSON(http.StatusAccepted, gin.H{"status": "success", "message": "the order has been accepted"})
+
+		newOrder.Accrual = loyalty.Accrual
+		newOrder.Status = loyalty.Status
+
+		s.DB.Save(&newOrder)
+	}(&newOrder, s.config.ServiceAddress)
 
 }
 
