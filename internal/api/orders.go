@@ -74,13 +74,15 @@ func (s *Server) AddOrder(ctx *gin.Context) {
 		loyalty, err := accrual.GetLoyalty(order.Number, serviceAddress)
 		if err != nil {
 			log.Println("no response from the accrual service")
+			order.Status = "INVALID"
+			s.DB.Save(&order)
 			return
 		}
 
-		newOrder.Accrual = loyalty.Accrual
-		newOrder.Status = loyalty.Status
+		order.Accrual = loyalty.Accrual
+		order.Status = loyalty.Status
 
-		s.DB.Save(&newOrder)
+		s.DB.Save(&order)
 	}(&newOrder, s.config.ServiceAddress)
 
 }
