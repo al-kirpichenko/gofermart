@@ -2,6 +2,7 @@ package api
 
 import (
 	"io"
+	"log"
 	"net/http"
 	"strconv"
 	"strings"
@@ -72,10 +73,9 @@ func (s *Server) AddOrder(ctx *gin.Context) {
 
 		loyalty, err := accrual.GetLoyalty(order.Number, serviceAddress)
 		if err != nil {
-			ctx.JSON(http.StatusInternalServerError, gin.H{"status": "error", "message": "no response from the accrual service"})
+			log.Println("no response from the accrual service")
 			return
 		}
-		ctx.JSON(http.StatusAccepted, gin.H{"status": "success", "message": "the order has been accepted"})
 
 		newOrder.Accrual = loyalty.Accrual
 		newOrder.Status = loyalty.Status
