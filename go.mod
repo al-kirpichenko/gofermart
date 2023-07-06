@@ -3,6 +3,7 @@ module github.com/al-kirpichenko/gofermart
 go 1.20
 
 require (
+	github.com/caarlos0/env v3.5.0+incompatible
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/gin-contrib/gzip v0.0.6
 	github.com/gin-gonic/gin v1.9.1
