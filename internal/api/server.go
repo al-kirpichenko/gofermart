@@ -3,7 +3,7 @@ package api
 import (
 	"gorm.io/gorm"
 
-	"github.com/al-kirpichenko/gofermart/cmd/gofermart/config"
+	"github.com/al-kirpichenko/gofermart/cmd/gophermart/config"
 	"github.com/al-kirpichenko/gofermart/internal/database"
 )
 

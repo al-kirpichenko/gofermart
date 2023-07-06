@@ -3,7 +3,7 @@ package main
 import (
 	"log"
 
-	"github.com/al-kirpichenko/gofermart/cmd/gofermart/config"
+	"github.com/al-kirpichenko/gofermart/cmd/gophermart/config"
 	"github.com/al-kirpichenko/gofermart/internal/api"
 	"github.com/al-kirpichenko/gofermart/internal/router"
 )
