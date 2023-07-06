@@ -20,4 +20,5 @@ func main() {
 		log.Fatal("dont start it!")
 		return
 	}
+	log.Println("the server started at: " + cfg.ServiceHost)
 }
