@@ -31,6 +31,7 @@ func GetLoyalty(orderNumber int, accrualAddress string) (*Loyalty, error) {
 	if err != nil {
 		return nil, err
 	}
+	defer resp.Body.Close()
 
 	err = json.NewDecoder(resp.Body).Decode(&loyalty)
 	if err != nil {
