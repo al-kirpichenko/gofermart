@@ -1,7 +1,6 @@
 package middleware
 
 import (
-	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -15,7 +14,6 @@ func Auth() gin.HandlerFunc {
 		userCookie, err := ctx.Cookie("token")
 
 		if err != nil {
-			log.Println(err)
 			ctx.AbortWithStatus(http.StatusUnauthorized)
 			return
 		}
@@ -23,7 +21,6 @@ func Auth() gin.HandlerFunc {
 		userID, err := jwt.GetUserIDFromToken(userCookie)
 
 		if err != nil || userID == 0 {
-
 			ctx.AbortWithStatus(http.StatusUnauthorized)
 			return
 		}

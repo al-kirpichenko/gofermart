@@ -27,7 +27,7 @@ func NewConfig() *Config {
 
 	flag.StringVar(&config.ServiceHost, "a", "localhost:8081", "It's a Host")
 	flag.StringVar(&config.DatabaseURI, "d", ps, "it's conn string")
-	flag.StringVar(&config.ServiceAddress, "r", "", "It's a FilePATH")
+	flag.StringVar(&config.ServiceAddress, "r", "localhost:8088", "It's a accrual system address")
 
 	return &config
 }

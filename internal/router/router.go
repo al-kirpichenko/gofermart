@@ -1,6 +1,8 @@
 package router
 
 import (
+	"github.com/gin-contrib/gzip"
+
 	"github.com/gin-gonic/gin"
 
 	"github.com/al-kirpichenko/gofermart/internal/api"
@@ -10,6 +12,7 @@ import (
 func Router(server *api.Server) *gin.Engine {
 
 	r := gin.Default()
+	r.Use(gzip.Gzip(gzip.DefaultCompression))
 
 	auth := r.Group("/")
 
@@ -17,7 +20,6 @@ func Router(server *api.Server) *gin.Engine {
 		auth.Use(middleware.Auth())
 		auth.POST("/api/user/orders", server.AddOrder)
 		auth.GET("/api/user/orders", server.GetOrders)
-		auth.GET("/api/user/orders/:number", server.Order)
 		auth.GET("/api/user/balance", server.Balance)
 		auth.POST("/api/user/balance/withdraw", server.Withdraw)
 		auth.POST("/api/user/withdrawals", server.Withdrawals)

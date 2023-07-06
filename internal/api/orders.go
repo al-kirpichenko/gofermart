@@ -9,6 +9,7 @@ import (
 	"github.com/gin-gonic/gin"
 
 	"github.com/al-kirpichenko/gofermart/internal/models"
+	"github.com/al-kirpichenko/gofermart/internal/services/accrual"
 	"github.com/al-kirpichenko/gofermart/internal/services/luhn"
 )
 
@@ -56,23 +57,31 @@ func (s *Server) AddOrder(ctx *gin.Context) {
 			ctx.JSON(http.StatusConflict, gin.H{"status": "fail", "message": "This Order has been loaded other user"})
 			return
 		}
+
 	} else if result.Error != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"status": "error", "message": "Something bad happened"})
 		return
 	}
+
 	// тут будет запрос к сервису начисления баллов
-	//TODO запрос к сервесу начисления баллов выполняется асинхронно, пользователю отдаем 202!
+	//TODO запрос к сервесу начисления баллов выполняется асинхронно
+
+	loyalty, err := accrual.GetLoyalty(newOrder.Number, s.config.ServiceAddress)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"status": "error", "message": "no response from the accrual service"})
+		return
+	}
+	ctx.JSON(http.StatusAccepted, gin.H{"status": "success", "message": "the order has been accepted"})
+
+	newOrder.Accrual = loyalty.Accrual
+	newOrder.Status = loyalty.Status
+
+	s.DB.Save(&newOrder)
 
 }
 
 // получение списка загруженных пользователем номеров заказов, статусов их обработки и информации о начислениях
 
 func (s *Server) GetOrders(c *gin.Context) {
-
-}
-
-// получение информации о расчёте начислений баллов лояльности
-
-func (s *Server) Order(c *gin.Context) {
 
 }
