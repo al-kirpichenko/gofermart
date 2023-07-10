@@ -20,6 +20,7 @@ func GetLoyalty(orderNumber string, accrualAddress string) (*Loyalty, error) {
 	// Создаем новый запрос GET к внешнему сервису
 
 	req, err := http.NewRequest("GET", accrualAddress+"/api/orders/"+orderNumber, nil)
+	req.Close = true
 
 	if err != nil {
 		return nil, err
@@ -30,6 +31,7 @@ func GetLoyalty(orderNumber string, accrualAddress string) (*Loyalty, error) {
 	if err != nil {
 		return nil, err
 	}
+
 	defer resp.Body.Close()
 
 	err = json.NewDecoder(resp.Body).Decode(&loyalty)
