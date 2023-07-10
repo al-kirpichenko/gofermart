@@ -27,7 +27,7 @@ func (s *Server) Withdrawals(ctx *gin.Context) {
 		return
 	}
 
-	s.DB.Order("created_at").Where("user_id = ?", userID).Find(&withdrawals)
+	s.DB.Order("processed_at").Where("user_id = ?", userID).Find(&withdrawals)
 
 	if len(withdrawals) == 0 {
 		ctx.JSON(http.StatusNoContent, gin.H{"status": "success", "message": "No content"})
