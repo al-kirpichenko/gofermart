@@ -27,7 +27,12 @@ func (s *Server) Withdrawals(ctx *gin.Context) {
 		return
 	}
 
-	s.DB.Order("processed_at").Where("user_id = ?", userID).Find(&withdrawals)
+	res := s.DB.Order("processed_at").Where("user_id = ?", userID).Find(&withdrawals)
+
+	if res.Error != nil {
+		ctx.JSON(http.StatusUnauthorized, gin.H{"status": "fail", "message": res.Error})
+		return
+	}
 
 	if len(withdrawals) == 0 {
 		ctx.JSON(http.StatusNoContent, gin.H{"status": "success", "message": "No content"})
