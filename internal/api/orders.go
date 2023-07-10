@@ -5,14 +5,12 @@ import (
 	"io"
 	"log"
 	"net/http"
-	"strconv"
 	"strings"
 
 	"github.com/gin-gonic/gin"
 
 	"github.com/al-kirpichenko/gofermart/internal/models"
 	"github.com/al-kirpichenko/gofermart/internal/services/accrual"
-	"github.com/al-kirpichenko/gofermart/internal/services/luhn"
 )
 
 // загрузка пользователем номера заказа для расчёта
@@ -26,17 +24,17 @@ func (s *Server) AddOrder(ctx *gin.Context) {
 		return
 	}
 
-	num, err := strconv.Atoi(string(body))
+	//num, err := strconv.Atoi(string(body))
 
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Invalid value", "message": err.Error()})
 		return
 	}
 
-	if !luhn.Valid(num) {
-		ctx.JSON(http.StatusUnprocessableEntity, gin.H{"status": "fail", "message": "Invalid number(Luhn)"})
-		return
-	}
+	//if !luhn.Valid(num) {
+	//	ctx.JSON(http.StatusUnprocessableEntity, gin.H{"status": "fail", "message": "Invalid number(Luhn)"})
+	//	return
+	//}
 
 	userID, _ := ctx.Get("userID")
 
@@ -50,7 +48,10 @@ func (s *Server) AddOrder(ctx *gin.Context) {
 	result := s.DB.Create(&newOrder)
 
 	if result.Error != nil && strings.Contains(result.Error.Error(), "duplicate key value violates unique") {
-		s.DB.First(&newOrder)
+		s.DB.First(&newOrder, "number = ?", newOrder.Number)
+
+		log.Println(newOrder.UserID)
+		log.Println(userID.(uint))
 
 		if newOrder.UserID == userID.(uint) {
 			ctx.JSON(http.StatusOK, gin.H{"status": "fail", "message": "This Order has been loaded this user"})
