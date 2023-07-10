@@ -83,8 +83,6 @@ func (s *Server) AddOrder(ctx *gin.Context) {
 			return
 		}
 
-		log.Println(loyalty)
-
 		order.Accrual = loyalty.Accrual
 		order.Status = loyalty.Status
 
