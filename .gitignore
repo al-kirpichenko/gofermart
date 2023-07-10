@@ -22,4 +22,4 @@ vendor/
 .idea
 .vscode
 
-cmd/gophermart/config
+cmd/gophermart/config/config.go
