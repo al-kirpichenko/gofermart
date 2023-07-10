@@ -97,7 +97,7 @@ func (s *Server) GetOrders(ctx *gin.Context) {
 
 	userID, _ := ctx.Get("userID")
 
-	s.DB.Where("user_id = ?", userID).Find(&orders)
+	s.DB.Order("created_at").Where("user_id = ?", userID).Find(&orders)
 
 	if len(orders) == 0 {
 		ctx.JSON(http.StatusNoContent, gin.H{"status": "success", "message": "No content"})
