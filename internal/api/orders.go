@@ -115,5 +115,5 @@ func (s *Server) GetOrders(ctx *gin.Context) {
 	log.Println("GetOrders 200")
 
 	ctx.Data(http.StatusOK, "application/json", response)
-
+	return
 }
