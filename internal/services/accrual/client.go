@@ -8,7 +8,7 @@ import (
 type Loyalty struct {
 	Order   string  `json:"order"`
 	Status  string  `json:"status"`
-	Accrual float32 `json:"accrual"`
+	Accrual float64 `json:"accrual"`
 }
 
 func GetLoyalty(orderNumber string, accrualAddress string) (*Loyalty, error) {

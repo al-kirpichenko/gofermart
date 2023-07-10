@@ -30,6 +30,8 @@ func (s *Server) Balance(ctx *gin.Context) {
 	balance.Current = user.Balance
 	balance.Withdrawn = user.Withdrawn
 
+	s.DB.Save(&user)
+
 	response, err := json.Marshal(balance)
 
 	if err != nil {
