@@ -23,7 +23,7 @@ func (s *Server) Balance(ctx *gin.Context) {
 	result := s.DB.First(&user, "id = ?", userID)
 
 	if result.Error != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"status": "fail", "message": "User not found"})
+		ctx.JSON(http.StatusUnauthorized, gin.H{"status": "fail", "message": "User not found"})
 		return
 	}
 

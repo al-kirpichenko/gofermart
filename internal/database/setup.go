@@ -20,6 +20,7 @@ func InitDB(conf string) *gorm.DB {
 
 	db.AutoMigrate(&models.User{})
 	db.AutoMigrate(&models.Order{})
+	db.AutoMigrate(&models.Withdraw{})
 
 	return db
 }
