@@ -8,7 +8,7 @@ import (
 )
 
 type Loyalty struct {
-	Order   string `json:"order"`
+	Order   int    `json:"order"`
 	Status  string `json:"status"`
 	Accrual int    `json:"accrual"`
 }
