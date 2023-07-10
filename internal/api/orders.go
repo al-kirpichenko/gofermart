@@ -28,8 +28,6 @@ func (s *Server) AddOrder(ctx *gin.Context) {
 
 	num, err := strconv.Atoi(string(body))
 
-	orderNumber := string(body)
-
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Invalid value", "message": err.Error()})
 		return
@@ -44,7 +42,7 @@ func (s *Server) AddOrder(ctx *gin.Context) {
 
 	newOrder := models.Order{
 
-		Number: orderNumber,
+		Number: string(body),
 		Status: "NEW",
 		UserID: userID.(uint),
 	}
@@ -96,11 +94,14 @@ func (s *Server) GetOrders(ctx *gin.Context) {
 
 	var orders []models.Order
 
+	log.Println("GetOrders started")
+
 	userID, _ := ctx.Get("userID")
 
 	s.DB.Where("user_id = ?", userID).Find(&orders)
 
 	if len(orders) == 0 {
+		log.Println("GetOrders 204")
 		ctx.JSON(http.StatusNoContent, gin.H{"status": "success", "message": "No content"})
 		return
 	}
@@ -111,6 +112,7 @@ func (s *Server) GetOrders(ctx *gin.Context) {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"status": "error", "message": "json error"})
 		return
 	}
+	log.Println("GetOrders 200")
 
 	ctx.Data(http.StatusOK, "application/json", response)
 
