@@ -75,6 +75,7 @@ func (s *Server) AddOrder(ctx *gin.Context) {
 		loyalty, err := accrual.GetLoyalty(order.Number, serviceAddress)
 		if err != nil {
 			log.Println("no response from the accrual service")
+			log.Println(err)
 			order.Status = "INVALID"
 			s.DB.Save(&order)
 			return
@@ -94,14 +95,11 @@ func (s *Server) GetOrders(ctx *gin.Context) {
 
 	var orders []models.Order
 
-	log.Println("GetOrders started")
-
 	userID, _ := ctx.Get("userID")
 
 	s.DB.Where("user_id = ?", userID).Find(&orders)
 
 	if len(orders) == 0 {
-		log.Println("GetOrders 204")
 		ctx.JSON(http.StatusNoContent, gin.H{"status": "success", "message": "No content"})
 		return
 	}
@@ -112,8 +110,6 @@ func (s *Server) GetOrders(ctx *gin.Context) {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"status": "error", "message": "json error"})
 		return
 	}
-	log.Println("GetOrders 200")
 
 	ctx.Data(http.StatusOK, "application/json", response)
-	return
 }
