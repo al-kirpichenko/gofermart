@@ -2,14 +2,13 @@ package accrual
 
 import (
 	"encoding/json"
-	"log"
 	"net/http"
 )
 
 type Loyalty struct {
-	Order   string `json:"order"`
-	Status  string `json:"status"`
-	Accrual int    `json:"accrual"`
+	Order   string  `json:"order"`
+	Status  string  `json:"status"`
+	Accrual float64 `json:"accrual"`
 }
 
 func GetLoyalty(orderNumber string, accrualAddress string) (*Loyalty, error) {
@@ -32,8 +31,6 @@ func GetLoyalty(orderNumber string, accrualAddress string) (*Loyalty, error) {
 		return nil, err
 	}
 	defer resp.Body.Close()
-
-	log.Println(resp)
 
 	err = json.NewDecoder(resp.Body).Decode(&loyalty)
 	if err != nil {
