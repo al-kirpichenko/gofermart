@@ -1,7 +1,6 @@
 package api
 
 import (
-	"log"
 	"net/http"
 	"strconv"
 
@@ -46,9 +45,6 @@ func (s *Server) Withdraw(ctx *gin.Context) {
 		ctx.JSON(http.StatusUnauthorized, gin.H{"status": "fail", "message": "User not found"})
 		return
 	}
-
-	log.Println(user.Balance)
-	log.Println(withdraw.Sum)
 
 	if user.Balance-withdraw.Sum < 0 {
 		ctx.JSON(http.StatusPaymentRequired, gin.H{"status": "fail", "message": "need more gold..."})
