@@ -3,6 +3,7 @@ package accrual
 import (
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
 )
 
@@ -32,6 +33,8 @@ func GetLoyalty(orderNumber string, accrualAddress string) (*Loyalty, error) {
 		return nil, err
 	}
 	defer resp.Body.Close()
+
+	log.Println(resp.Body)
 
 	err = json.NewDecoder(resp.Body).Decode(&loyalty)
 	if err != nil {
