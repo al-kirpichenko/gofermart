@@ -56,6 +56,7 @@ func (s *Server) Withdraw(ctx *gin.Context) {
 	}
 
 	user.Balance = math.RoundFloat(user.Balance-withdraw.Sum, 2)
+	user.Withdrawn = user.Withdrawn + withdraw.Sum
 
 	s.DB.Save(&withdraw)
 	s.DB.Save(&user)
