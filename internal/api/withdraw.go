@@ -3,6 +3,7 @@ package api
 import (
 	"net/http"
 	"strconv"
+	"time"
 
 	"github.com/gin-gonic/gin"
 
@@ -53,6 +54,8 @@ func (s *Server) Withdraw(ctx *gin.Context) {
 
 	user.Balance = math.RoundFloat(user.Balance-withdraw.Sum, 2)
 	user.Withdrawn = user.Withdrawn + withdraw.Sum
+	withdraw.UserID = user.ID
+	withdraw.ProcessedAt = time.Now()
 
 	s.DB.Save(&withdraw)
 	s.DB.Save(&user)
