@@ -22,7 +22,7 @@ func Router(server *api.Server) *gin.Engine {
 		auth.GET("/api/user/orders", server.GetOrders)
 		auth.GET("/api/user/balance", server.Balance)
 		auth.POST("/api/user/balance/withdraw", server.Withdraw)
-		auth.POST("/api/user/withdrawals", server.Withdrawals)
+		auth.GET("/api/user/withdrawals", server.Withdrawals)
 	}
 
 	r.POST("/api/user/register", server.Register)
