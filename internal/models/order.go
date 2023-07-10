@@ -8,7 +8,7 @@ import (
 
 type Order struct {
 	gorm.Model
-	Number   int `gorm:"not null;unique"`
+	Number   string `gorm:"not null;unique"`
 	UserID   uint
 	Status   string
 	Accrual  int

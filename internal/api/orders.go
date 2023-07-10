@@ -28,6 +28,8 @@ func (s *Server) AddOrder(ctx *gin.Context) {
 
 	num, err := strconv.Atoi(string(body))
 
+	orderNumber := string(body)
+
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Invalid value", "message": err.Error()})
 		return
@@ -42,7 +44,7 @@ func (s *Server) AddOrder(ctx *gin.Context) {
 
 	newOrder := models.Order{
 
-		Number: num,
+		Number: orderNumber,
 		Status: "NEW",
 		UserID: userID.(uint),
 	}

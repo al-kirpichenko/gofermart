@@ -12,7 +12,7 @@ type Loyalty struct {
 	Accrual int    `json:"accrual"`
 }
 
-func GetLoyalty(orderNumber int, accrualAddress string) (*Loyalty, error) {
+func GetLoyalty(orderNumber string, accrualAddress string) (*Loyalty, error) {
 
 	client := &http.Client{}
 
