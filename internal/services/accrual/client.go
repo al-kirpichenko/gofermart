@@ -2,7 +2,6 @@ package accrual
 
 import (
 	"encoding/json"
-	"fmt"
 	"log"
 	"net/http"
 )
@@ -21,7 +20,7 @@ func GetLoyalty(orderNumber string, accrualAddress string) (*Loyalty, error) {
 
 	// Создаем новый запрос GET к внешнему сервису
 
-	req, err := http.NewRequest("GET", accrualAddress+"/"+fmt.Sprintf("%v", orderNumber), nil)
+	req, err := http.NewRequest("GET", accrualAddress+"/api/orders/"+orderNumber, nil)
 
 	if err != nil {
 		return nil, err
