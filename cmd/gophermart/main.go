@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"log"
 	"net/http"
 	"os"
 	"os/signal"
@@ -12,7 +11,13 @@ import (
 	"github.com/al-kirpichenko/gofermart/cmd/gophermart/config"
 	"github.com/al-kirpichenko/gofermart/internal/api"
 	"github.com/al-kirpichenko/gofermart/internal/router"
+
+	"go.uber.org/zap"
 )
+
+func init() {
+	zap.ReplaceGlobals(zap.Must(zap.NewProduction()))
+}
 
 func main() {
 
@@ -27,25 +32,24 @@ func main() {
 	}
 
 	go func() {
-		// service connections
 		if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
-			log.Fatalf("listen: %s\n", err)
+			zap.L().Fatal("listen: %s\n", zap.Error(err))
 		}
 	}()
 
 	quit := make(chan os.Signal)
-	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
+	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM) //nolint:govet
 	<-quit
-	log.Println("Shutdown Server ...")
+	zap.L().Info("Shutdown Server ...")
 
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
+
 	if err := srv.Shutdown(ctx); err != nil {
-		log.Fatal("Server Shutdown:", err)
+		zap.L().Fatal("Server Shutdown: ", zap.Error(err))
 	}
-	// catching ctx.Done(). timeout of 5 seconds.
-	select {
-	case <-ctx.Done():
-		log.Println("timeout of 5 seconds.")
+
+	if <-ctx.Done(); true {
+		zap.L().Info("Shutdown: timeout of 5 seconds.")
 	}
 }
