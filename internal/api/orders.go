@@ -67,32 +67,32 @@ func (s *Server) AddOrder(ctx *gin.Context) {
 
 	ctx.JSON(http.StatusAccepted, gin.H{"status": "success", "message": "the order has been accepted"})
 
-	go func(order *models.Order, serviceAddress string) {
+	go func() {
 
 		var user models.User
 
-		loyalty, err := accrual.GetLoyalty(order.Number, serviceAddress)
+		loyalty, err := accrual.GetLoyalty(newOrder.Number, s.config.ServiceAddress)
 		if err != nil {
 			s.Logger.Error("No response from the accrual service", zap.Error(err))
-			order.Status = "INVALID"
-			s.DB.Save(&order)
+			newOrder.Status = "INVALID"
+			s.DB.Save(&newOrder)
 			return
 		}
 
-		order.Accrual = loyalty.Accrual
-		order.Status = loyalty.Status
+		newOrder.Accrual = loyalty.Accrual
+		newOrder.Status = loyalty.Status
 
 		result := s.DB.First(&user, "id = ?", userID)
 		if result.Error != nil {
 			ctx.JSON(http.StatusUnauthorized, gin.H{"status": "fail", "message": "User not found"})
 			return
 		}
-		user.Balance = user.Balance + order.Accrual
+		user.Balance = user.Balance + newOrder.Accrual
 
-		s.DB.Save(&order)
+		s.DB.Save(&newOrder)
 		s.DB.Save(&user)
 
-	}(&newOrder, s.config.ServiceAddress)
+	}()
 
 }
 

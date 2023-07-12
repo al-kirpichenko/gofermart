@@ -23,11 +23,9 @@ func main() {
 	server := api.NewServer(cfg)
 	server.Logger = logger
 
-	r := router.Router(server)
-
 	srv := &http.Server{
 		Addr:    cfg.ServiceHost,
-		Handler: r,
+		Handler: router.Router(server),
 	}
 
 	go func() {
