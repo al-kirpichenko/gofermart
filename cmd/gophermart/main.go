@@ -28,6 +28,8 @@ func main() {
 		Handler: router.Router(server),
 	}
 
+	// Graceful shutdown
+
 	go func() {
 		if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
 			logger.Fatal("listen: %s\n", zap.Error(err))
