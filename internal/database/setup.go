@@ -18,9 +18,21 @@ func InitDB(conf string) *gorm.DB {
 		log.Fatal("Failed to connect to database!")
 	}
 
-	db.AutoMigrate(&models.User{})
-	db.AutoMigrate(&models.Order{})
-	db.AutoMigrate(&models.Withdraw{})
+	errUsers := db.AutoMigrate(&models.User{})
+	if errUsers != nil {
+		log.Fatal(err)
+		return nil
+	}
+	errOrders := db.AutoMigrate(&models.Order{})
+	if errOrders != nil {
+		log.Fatal(err)
+		return nil
+	}
+	errWithdraws := db.AutoMigrate(&models.Withdraw{})
+	if errWithdraws != nil {
+		log.Fatal(err)
+		return nil
+	}
 
 	return db
 }

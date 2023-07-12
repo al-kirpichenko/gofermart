@@ -3,12 +3,12 @@ package api
 import (
 	"encoding/json"
 	"io"
-	"log"
 	"net/http"
 	"strconv"
 	"strings"
 
 	"github.com/gin-gonic/gin"
+	"go.uber.org/zap"
 
 	"github.com/al-kirpichenko/gofermart/internal/models"
 	"github.com/al-kirpichenko/gofermart/internal/services/accrual"
@@ -65,9 +65,6 @@ func (s *Server) AddOrder(ctx *gin.Context) {
 		return
 	}
 
-	// тут будет запрос к сервису начисления баллов
-	//TODO запрос к сервесу начисления баллов выполняется асинхронно
-
 	ctx.JSON(http.StatusAccepted, gin.H{"status": "success", "message": "the order has been accepted"})
 
 	go func(order *models.Order, serviceAddress string) {
@@ -76,8 +73,7 @@ func (s *Server) AddOrder(ctx *gin.Context) {
 
 		loyalty, err := accrual.GetLoyalty(order.Number, serviceAddress)
 		if err != nil {
-			log.Println("no response from the accrual service")
-			log.Println(err)
+			s.Logger.Error("No response from the accrual service", zap.Error(err))
 			order.Status = "INVALID"
 			s.DB.Save(&order)
 			return

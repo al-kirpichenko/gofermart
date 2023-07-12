@@ -1,13 +1,15 @@
 package api
 
 import (
-	"log"
 	"net/http"
+	"strconv"
 	"time"
 
 	"github.com/gin-gonic/gin"
+	"go.uber.org/zap"
 
 	"github.com/al-kirpichenko/gofermart/internal/models"
+	"github.com/al-kirpichenko/gofermart/internal/services/luhn"
 	"github.com/al-kirpichenko/gofermart/internal/services/math"
 )
 
@@ -25,17 +27,17 @@ func (s *Server) Withdraw(ctx *gin.Context) {
 		return
 	}
 
-	//num, err := strconv.Atoi(withdraw.Order)
+	num, err := strconv.Atoi(withdraw.Order)
 
-	//if err != nil {
-	//	ctx.JSON(http.StatusUnprocessableEntity, gin.H{"error": "Invalid order", "message": err.Error()})
-	//	return
-	//}
+	if err != nil {
+		ctx.JSON(http.StatusUnprocessableEntity, gin.H{"error": "Invalid order", "message": err.Error()})
+		return
+	}
 
-	//if !luhn.Valid(num) {
-	//	ctx.JSON(http.StatusUnprocessableEntity, gin.H{"status": "fail", "message": "Invalid number(Luhn)"})
-	//	return
-	//}
+	if !luhn.Valid(num) {
+		ctx.JSON(http.StatusUnprocessableEntity, gin.H{"status": "fail", "message": "Invalid number(Luhn)"})
+		return
+	}
 
 	userID, _ := ctx.Get("userID")
 
@@ -60,7 +62,7 @@ func (s *Server) Withdraw(ctx *gin.Context) {
 
 	if r.Error != nil {
 		ctx.JSON(http.StatusUnauthorized, gin.H{"status": "fail", "message": r.Error})
-		log.Println(r.Error)
+		s.Logger.Error("Don't save withdraw! ", zap.Error(r.Error))
 		return
 	}
 	s.DB.Save(&user)
