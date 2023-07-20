@@ -7,6 +7,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
+	"gorm.io/gorm"
 
 	"github.com/al-kirpichenko/gofermart/internal/models"
 	"github.com/al-kirpichenko/gofermart/internal/services/luhn"
@@ -39,34 +40,41 @@ func (s *Server) Withdraw(ctx *gin.Context) {
 		return
 	}
 
-	userID, _ := ctx.Get("userID")
+	s.DB.Transaction(func(tx *gorm.DB) error {
 
-	result := s.DB.First(&user, "id = ?", userID)
+		userID, _ := ctx.Get("userID")
 
-	if result.Error != nil {
-		ctx.JSON(http.StatusUnauthorized, gin.H{"status": "fail", "message": "User not found"})
-		return
-	}
+		result := tx.First(&user, "id = ?", userID)
 
-	if user.Balance-withdraw.Sum < 0 {
-		ctx.JSON(http.StatusPaymentRequired, gin.H{"status": "fail", "message": "need more gold..."})
-		return
-	}
+		if result.Error != nil {
+			ctx.JSON(http.StatusUnauthorized, gin.H{"status": "fail", "message": "User not found"})
+			return err
+		}
 
-	user.Balance = math.RoundFloat(user.Balance-withdraw.Sum, 2)
-	user.Withdrawn = user.Withdrawn + withdraw.Sum
-	withdraw.UserID = user.ID
-	withdraw.ProcessedAt = time.Now()
+		if user.Balance-withdraw.Sum < 0 {
+			ctx.JSON(http.StatusPaymentRequired, gin.H{"status": "fail", "message": "need more gold..."})
+			return err
+		}
 
-	r := s.DB.Save(&withdraw)
+		user.Balance = math.RoundFloat(user.Balance-withdraw.Sum, 2)
+		user.Withdrawn = user.Withdrawn + withdraw.Sum
+		withdraw.UserID = user.ID
+		withdraw.ProcessedAt = time.Now()
 
-	if r.Error != nil {
-		ctx.JSON(http.StatusUnauthorized, gin.H{"status": "fail", "message": r.Error})
-		s.Logger.Error("Don't save withdraw! ", zap.Error(r.Error))
-		return
-	}
-	s.DB.Save(&user)
+		r := tx.Save(&withdraw)
 
+		if r.Error != nil {
+			ctx.JSON(http.StatusUnauthorized, gin.H{"status": "fail", "message": r.Error})
+			s.Logger.Error("Don't save withdraw! ", zap.Error(r.Error))
+			return err
+		}
+
+		if err := tx.Save(&user).Error; err != nil {
+			return err
+		}
+		//s.DB.Save(&user)
+		return nil
+	})
 	ctx.JSON(http.StatusOK, gin.H{"status": "success", "message": "the withdraw has been accepted"})
 
 }
