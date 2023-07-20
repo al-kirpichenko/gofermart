@@ -1,7 +1,6 @@
 package api
 
 import (
-	"encoding/json"
 	"io"
 	"net/http"
 	"strconv"
@@ -9,6 +8,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
+	"gorm.io/gorm"
 
 	"github.com/al-kirpichenko/gofermart/internal/models"
 	"github.com/al-kirpichenko/gofermart/internal/services/accrual"
@@ -55,10 +55,9 @@ func (s *Server) AddOrder(ctx *gin.Context) {
 		if newOrder.UserID == userID.(uint) {
 			ctx.JSON(http.StatusOK, gin.H{"status": "fail", "message": "This Order has been loaded this user"})
 			return
-		} else {
-			ctx.JSON(http.StatusConflict, gin.H{"status": "fail", "message": "This Order has been loaded other user"})
-			return
 		}
+		ctx.JSON(http.StatusConflict, gin.H{"status": "fail", "message": "This Order has been loaded other user"})
+		return
 
 	} else if result.Error != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"status": "error", "message": "Something bad happened"})
@@ -89,34 +88,18 @@ func (s *Server) AddOrder(ctx *gin.Context) {
 		}
 		user.Balance = user.Balance + newOrder.Accrual
 
-		s.DB.Save(&newOrder)
-		s.DB.Save(&user)
+		s.DB.Transaction(func(tx *gorm.DB) error {
 
+			if err := tx.Save(&newOrder).Error; err != nil {
+				return err
+			}
+			if err := tx.Save(&user).Error; err != nil {
+				return err
+			}
+			//s.DB.Save(&newOrder)
+			//s.DB.Save(&user)
+			return nil
+		})
 	}()
 
-}
-
-// получение списка загруженных пользователем номеров заказов, статусов их обработки и информации о начислениях
-
-func (s *Server) GetOrders(ctx *gin.Context) {
-
-	var orders []models.Order
-
-	userID, _ := ctx.Get("userID")
-
-	s.DB.Order("created_at").Where("user_id = ?", userID).Find(&orders)
-
-	if len(orders) == 0 {
-		ctx.JSON(http.StatusNoContent, gin.H{"status": "success", "message": "No content"})
-		return
-	}
-
-	response, err := json.Marshal(orders)
-
-	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"status": "error", "message": "json error"})
-		return
-	}
-
-	ctx.Data(http.StatusOK, "application/json", response)
 }
