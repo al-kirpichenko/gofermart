@@ -38,14 +38,12 @@ func GetLoyalty(orderNumber string, accrualAddress string) (*Loyalty, error) {
 		duration := time.Second * 10
 		time.Sleep(duration)
 	}
-
+	defer resp.Body.Close()
 	//resp, err := client.Do(req)
 
 	if err != nil {
 		return nil, err
 	}
-
-	defer resp.Body.Close()
 
 	err = json.NewDecoder(resp.Body).Decode(&loyalty)
 	if err != nil {
