@@ -15,28 +15,31 @@ func UpdateOrders(s *api.Server) {
 
 	var orders []models.Order
 
-	s.DB.Where("status <> ?", "PROCESSING").Find(&orders)
+	for {
 
-	for _, order := range orders {
+		s.DB.Where("status <> ?", "PROCESSING").Find(&orders)
 
-		loyalty, err := accrual.Get(order.Number, s.Config.ServiceAddress)
+		for _, order := range orders {
 
-		if err != nil {
-			s.Logger.Error("No response from the accrual service", zap.Error(err))
-			continue
-		}
+			loyalty, err := accrual.Get(order.Number, s.Config.ServiceAddress)
 
-		s.DB.Transaction(func(tx *gorm.DB) error {
-
-			order.Accrual = loyalty.Accrual
-			order.Status = loyalty.Status
-
-			if err := tx.Save(&order).Error; err != nil {
-				s.Logger.Error("Don't save order accrual", zap.Error(err))
-				return err
+			if err != nil {
+				s.Logger.Error("No response from the accrual service", zap.Error(err))
+				continue
 			}
-			return nil
-		})
+
+			s.DB.Transaction(func(tx *gorm.DB) error {
+
+				order.Accrual = loyalty.Accrual
+				order.Status = loyalty.Status
+
+				if err := tx.Save(&order).Error; err != nil {
+					s.Logger.Error("Don't save order accrual", zap.Error(err))
+					return err
+				}
+				return nil
+			})
+		}
 		duration := time.Minute * 10
 		time.Sleep(duration)
 	}
