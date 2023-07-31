@@ -72,7 +72,7 @@ func (s *Server) AddOrder(ctx *gin.Context) {
 
 	if err != nil {
 		s.Logger.Error("No response from the accrual service", zap.Error(err))
-		newOrder.Status = "INVALID"
+		newOrder.Status = "PROCESSING"
 		s.DB.Save(&newOrder)
 		return
 	}
