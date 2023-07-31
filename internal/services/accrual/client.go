@@ -2,6 +2,7 @@ package accrual
 
 import (
 	"encoding/json"
+	"io"
 	"net/http"
 	"time"
 )
@@ -38,7 +39,9 @@ func GetLoyalty(orderNumber string, accrualAddress string) (*Loyalty, error) {
 		duration := time.Second * 10
 		time.Sleep(duration)
 	}
-	defer resp.Body.Close()
+	defer func(Body io.ReadCloser) {
+		_ = Body.Close()
+	}(resp.Body)
 	//resp, err := client.Do(req)
 
 	if err != nil {
