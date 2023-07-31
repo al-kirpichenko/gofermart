@@ -1,4 +1,4 @@
-package accrual
+package scheduler
 
 import (
 	"time"
@@ -8,6 +8,7 @@ import (
 
 	"github.com/al-kirpichenko/gofermart/internal/api"
 	"github.com/al-kirpichenko/gofermart/internal/models"
+	"github.com/al-kirpichenko/gofermart/internal/services/accrual"
 )
 
 func UpdateOrders(s *api.Server) {
@@ -18,7 +19,7 @@ func UpdateOrders(s *api.Server) {
 
 	for _, order := range orders {
 
-		loyalty, err := Get(order.Number, s.Config.ServiceAddress)
+		loyalty, err := accrual.Get(order.Number, s.Config.ServiceAddress)
 
 		if err != nil {
 			s.Logger.Error("No response from the accrual service", zap.Error(err))
