@@ -68,7 +68,7 @@ func (s *Server) AddOrder(ctx *gin.Context) {
 
 	var user models.User
 
-	loyalty, err := accrual.GetLoyalty(newOrder.Number, s.config.ServiceAddress)
+	loyalty, err := accrual.GetLoyalty(newOrder.Number, s.Config.ServiceAddress)
 
 	if err != nil {
 		s.Logger.Error("No response from the accrual service", zap.Error(err))

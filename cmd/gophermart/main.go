@@ -11,6 +11,7 @@ import (
 	"github.com/al-kirpichenko/gofermart/cmd/gophermart/config"
 	"github.com/al-kirpichenko/gofermart/internal/api"
 	"github.com/al-kirpichenko/gofermart/internal/router"
+	"github.com/al-kirpichenko/gofermart/internal/services/accrual"
 
 	"go.uber.org/zap"
 )
@@ -35,6 +36,9 @@ func main() {
 			logger.Fatal("listen: %s\n", zap.Error(err))
 		}
 	}()
+
+	// запускаем опрос раз в 10 минут заказов со статусом PROCESSING
+	go accrual.UpdateOrders(server)
 
 	quit := make(chan os.Signal, 1)
 

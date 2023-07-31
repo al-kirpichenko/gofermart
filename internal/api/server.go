@@ -9,7 +9,7 @@ import (
 )
 
 type Server struct {
-	config *config.Config
+	Config *config.Config
 	DB     *gorm.DB
 	Logger *zap.Logger
 }
@@ -17,7 +17,7 @@ type Server struct {
 func NewServer(config *config.Config) *Server {
 
 	return &Server{
-		config: config,
+		Config: config,
 		DB:     database.InitDB(config.DatabaseURI),
 	}
 }

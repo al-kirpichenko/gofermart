@@ -20,7 +20,7 @@ func GetLoyalty(orderNumber string, accrualAddress string) (*Loyalty, error) {
 	)
 
 	for i := 0; i < 3; i++ {
-		loyalty, err = get(orderNumber, accrualAddress)
+		loyalty, err = Get(orderNumber, accrualAddress)
 		if err == nil {
 			return loyalty, nil
 		}
@@ -30,7 +30,7 @@ func GetLoyalty(orderNumber string, accrualAddress string) (*Loyalty, error) {
 	return nil, err
 }
 
-func get(orderNumber string, accrualAddress string) (*Loyalty, error) {
+func Get(orderNumber string, accrualAddress string) (*Loyalty, error) {
 
 	client := &http.Client{}
 
