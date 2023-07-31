@@ -66,40 +66,39 @@ func (s *Server) AddOrder(ctx *gin.Context) {
 
 	ctx.JSON(http.StatusAccepted, gin.H{"status": "success", "message": "the order has been accepted"})
 
-	go func() {
+	var user models.User
 
-		var user models.User
+	loyalty, err := accrual.GetLoyalty(newOrder.Number, s.config.ServiceAddress)
 
-		loyalty, err := accrual.GetLoyalty(newOrder.Number, s.config.ServiceAddress)
-		if err != nil {
-			s.Logger.Error("No response from the accrual service", zap.Error(err))
-			newOrder.Status = "INVALID"
-			s.DB.Save(&newOrder)
-			return
-		}
+	if err != nil {
+		s.Logger.Error("No response from the accrual service", zap.Error(err))
+		newOrder.Status = "INVALID"
+		s.DB.Save(&newOrder)
+		return
+	}
+
+	s.DB.Transaction(func(tx *gorm.DB) error {
 
 		newOrder.Accrual = loyalty.Accrual
 		newOrder.Status = loyalty.Status
 
-		result := s.DB.First(&user, "id = ?", userID)
-		if result.Error != nil {
+		res := s.DB.First(&user, "id = ?", userID)
+
+		if res.Error != nil {
 			ctx.JSON(http.StatusUnauthorized, gin.H{"status": "fail", "message": "User not found"})
-			return
+			return err
 		}
 		user.Balance = user.Balance + newOrder.Accrual
 
-		s.DB.Transaction(func(tx *gorm.DB) error {
-
-			if err := tx.Save(&newOrder).Error; err != nil {
-				return err
-			}
-			if err := tx.Save(&user).Error; err != nil {
-				return err
-			}
-			//s.DB.Save(&newOrder)
-			//s.DB.Save(&user)
-			return nil
-		})
-	}()
+		if err := tx.Save(&newOrder).Error; err != nil {
+			return err
+		}
+		if err := tx.Save(&user).Error; err != nil {
+			return err
+		}
+		//s.DB.Save(&newOrder)
+		//s.DB.Save(&user)
+		return nil
+	})
 
 }
