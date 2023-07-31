@@ -3,6 +3,7 @@ package accrual
 import (
 	"encoding/json"
 	"net/http"
+	"time"
 )
 
 type Loyalty struct {
@@ -26,7 +27,19 @@ func GetLoyalty(orderNumber string, accrualAddress string) (*Loyalty, error) {
 		return nil, err
 	}
 
-	resp, err := client.Do(req)
+	var resp *http.Response
+
+	// делаем до 3 попыток с интервалом 10 сек. в случае неудачи
+	for i := 0; i < 3; i++ {
+		resp, err = client.Do(req)
+		if err == nil {
+			break
+		}
+		duration := time.Second * 10
+		time.Sleep(duration)
+	}
+
+	//resp, err := client.Do(req)
 
 	if err != nil {
 		return nil, err
