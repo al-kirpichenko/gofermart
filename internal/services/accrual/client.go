@@ -2,7 +2,6 @@ package accrual
 
 import (
 	"encoding/json"
-	"io"
 	"net/http"
 	"time"
 )
@@ -15,11 +14,27 @@ type Loyalty struct {
 
 func GetLoyalty(orderNumber string, accrualAddress string) (*Loyalty, error) {
 
+	var (
+		loyalty *Loyalty
+		err     error
+	)
+
+	for i := 0; i < 3; i++ {
+		loyalty, err = get(orderNumber, accrualAddress)
+		if err == nil {
+			return loyalty, nil
+		}
+		duration := time.Second * 10
+		time.Sleep(duration)
+	}
+	return nil, err
+}
+
+func get(orderNumber string, accrualAddress string) (*Loyalty, error) {
+
 	client := &http.Client{}
 
 	var loyalty Loyalty
-
-	// Создаем новый запрос GET к внешнему сервису
 
 	req, err := http.NewRequest("GET", accrualAddress+"/api/orders/"+orderNumber, nil)
 	req.Close = true
@@ -28,21 +43,9 @@ func GetLoyalty(orderNumber string, accrualAddress string) (*Loyalty, error) {
 		return nil, err
 	}
 
-	var resp *http.Response
+	resp, err := client.Do(req)
 
-	// делаем до 3 попыток с интервалом 10 сек. в случае неудачи
-	for i := 0; i < 3; i++ {
-		resp, err = client.Do(req)
-		if err == nil {
-			break
-		}
-		duration := time.Second * 10
-		time.Sleep(duration)
-	}
-	defer func(Body io.ReadCloser) {
-		_ = Body.Close()
-	}(resp.Body)
-	//resp, err := client.Do(req)
+	defer resp.Body.Close()
 
 	if err != nil {
 		return nil, err
