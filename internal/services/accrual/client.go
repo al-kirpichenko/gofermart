@@ -45,11 +45,11 @@ func get(orderNumber string, accrualAddress string) (*Loyalty, error) {
 
 	resp, err := client.Do(req)
 
-	defer resp.Body.Close()
-
 	if err != nil {
 		return nil, err
 	}
+
+	defer resp.Body.Close()
 
 	err = json.NewDecoder(resp.Body).Decode(&loyalty)
 	if err != nil {
