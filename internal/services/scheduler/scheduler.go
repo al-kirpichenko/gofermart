@@ -40,7 +40,6 @@ func UpdateOrders(s *api.Server) {
 				return nil
 			})
 		}
-		duration := time.Minute * 10
-		time.Sleep(duration)
+		time.Sleep(s.Config.UpdateDuration)
 	}
 }

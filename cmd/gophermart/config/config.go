@@ -3,6 +3,7 @@ package config
 import (
 	"flag"
 	"fmt"
+	"time"
 
 	"github.com/caarlos0/env"
 )
@@ -11,6 +12,7 @@ type Config struct {
 	ServiceHost    string `env:"RUN_ADDRESS"`
 	DatabaseURI    string `env:"DATABASE_URI"`
 	ServiceAddress string `env:"ACCRUAL_SYSTEM_ADDRESS"`
+	UpdateDuration time.Duration
 }
 
 const (
@@ -18,11 +20,13 @@ const (
 	DBuser     = "postgres"
 	DBpassword = "123"
 	DBname     = "postgres"
+	UpdDur     = time.Minute * 2
 )
 
 func NewConfig() *Config {
 
 	config := Config{}
+	config.UpdateDuration = UpdDur
 
 	ps := fmt.Sprintf("host=%s user=%s password=%s dbname=%s sslmode=disable",
 		DBhost, DBuser, DBpassword, DBname)
