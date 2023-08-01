@@ -15,12 +15,16 @@ type Config struct {
 }
 
 const (
-	DBhost         = "localhost"
-	DBuser         = "postgres"
-	DBpassword     = "123"
-	DBname         = "postgres"
-	UpdateDuration = time.Minute * 2
-	ClientTimeout  = time.Second * 10
+	DBhost           = "localhost"
+	DBuser           = "postgres"
+	DBpassword       = "123"
+	DBname           = "postgres"
+	UpdateDuration   = time.Minute * 2
+	ClientTimeout    = time.Second * 10
+	OrdersBatchNum   = 100
+	StatusNew        = "NEW"
+	StatusProcessing = "PROCESSING"
+	StatusRegistered = "REGISTERED"
 )
 
 func NewConfig() *Config {
