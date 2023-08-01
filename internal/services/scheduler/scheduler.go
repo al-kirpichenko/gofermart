@@ -17,7 +17,7 @@ func UpdateOrders(s *api.Server) {
 
 	for {
 
-		s.DB.Where("status = ?", "PROCESSING").Find(&orders)
+		s.DB.Where("status = ?", "PROCESSING").Find(&orders).Limit(200)
 
 		for _, order := range orders {
 
