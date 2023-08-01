@@ -6,6 +6,7 @@ import (
 	"go.uber.org/zap"
 	"gorm.io/gorm"
 
+	"github.com/al-kirpichenko/gofermart/cmd/gophermart/config"
 	"github.com/al-kirpichenko/gofermart/internal/api"
 	"github.com/al-kirpichenko/gofermart/internal/models"
 	"github.com/al-kirpichenko/gofermart/internal/services/accrual"
@@ -40,6 +41,7 @@ func UpdateOrders(s *api.Server) {
 				return nil
 			})
 		}
-		time.Sleep(s.Config.UpdateDuration)
+		time.Sleep(config.UpdateDuration)
+
 	}
 }

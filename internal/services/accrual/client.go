@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"net/http"
 	"time"
+
+	"github.com/al-kirpichenko/gofermart/cmd/gophermart/config"
 )
 
 type Loyalty struct {
@@ -33,6 +35,8 @@ func GetLoyalty(orderNumber string, accrualAddress string) (*Loyalty, error) {
 func Get(orderNumber string, accrualAddress string) (*Loyalty, error) {
 
 	client := &http.Client{}
+
+	client.Timeout = config.ClientTimeout
 
 	var loyalty Loyalty
 

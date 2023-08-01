@@ -12,21 +12,20 @@ type Config struct {
 	ServiceHost    string `env:"RUN_ADDRESS"`
 	DatabaseURI    string `env:"DATABASE_URI"`
 	ServiceAddress string `env:"ACCRUAL_SYSTEM_ADDRESS"`
-	UpdateDuration time.Duration
 }
 
 const (
-	DBhost     = "localhost"
-	DBuser     = "postgres"
-	DBpassword = "123"
-	DBname     = "postgres"
-	UpdDur     = time.Minute * 2
+	DBhost         = "localhost"
+	DBuser         = "postgres"
+	DBpassword     = "123"
+	DBname         = "postgres"
+	UpdateDuration = time.Minute * 2
+	ClientTimeout  = time.Second * 10
 )
 
 func NewConfig() *Config {
 
 	config := Config{}
-	config.UpdateDuration = UpdDur
 
 	ps := fmt.Sprintf("host=%s user=%s password=%s dbname=%s sslmode=disable",
 		DBhost, DBuser, DBpassword, DBname)
