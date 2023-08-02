@@ -31,9 +31,9 @@ func UpdateOrders(s *api.Server) {
 
 			var user models.User
 
-			s.DB.First(&user, "id = ?", order.UserID)
-
 			s.DB.Transaction(func(tx *gorm.DB) error {
+
+				s.DB.First(&user, "id = ?", order.UserID)
 
 				order.Accrual = loyalty.Accrual
 				order.Status = loyalty.Status
