@@ -37,7 +37,7 @@ func main() {
 		}
 	}()
 
-	// запускаем опрос раз в 10 минут заказов со статусом PROCESSING
+	// запускаем опрос  заказов со статусом PROCESSING
 	go scheduler.UpdateOrders(server)
 
 	quit := make(chan os.Signal, 1)

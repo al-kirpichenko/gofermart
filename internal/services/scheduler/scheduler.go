@@ -29,13 +29,23 @@ func UpdateOrders(s *api.Server) {
 				continue
 			}
 
+			var user models.User
+
+			s.DB.First(&user, "id = ?", order.UserID)
+
 			s.DB.Transaction(func(tx *gorm.DB) error {
 
 				order.Accrual = loyalty.Accrual
 				order.Status = loyalty.Status
 
+				user.Balance = user.Balance + loyalty.Accrual
+
 				if err := tx.Save(&order).Error; err != nil {
 					s.Logger.Error("Don't save order accrual", zap.Error(err))
+					return err
+				}
+				if err := tx.Save(&user).Error; err != nil {
+					s.Logger.Error("Don't update user balance", zap.Error(err))
 					return err
 				}
 				return nil
