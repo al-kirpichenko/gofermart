@@ -62,39 +62,5 @@ func (s *Server) AddOrder(ctx *gin.Context) {
 	}
 
 	ctx.JSON(http.StatusAccepted, gin.H{"status": "success", "message": "the order has been accepted"})
-	//
-	//var user models.User
-	//
-	//loyalty, err := accrual.GetLoyalty(newOrder.Number, s.Config.ServiceAddress)
-	//
-	//if err != nil {
-	//	s.Logger.Error("No response from the accrual service", zap.Error(err))
-	//	newOrder.Status = "PROCESSING"
-	//	s.DB.Save(&newOrder)
-	//	return
-	//}
-	//
-	//s.DB.Transaction(func(tx *gorm.DB) error {
-	//
-	//	newOrder.Accrual = loyalty.Accrual
-	//	newOrder.Status = loyalty.Status
-	//
-	//	res := s.DB.First(&user, "id = ?", userID)
-	//
-	//	if res.Error != nil {
-	//		ctx.JSON(http.StatusUnauthorized, gin.H{"status": "fail", "message": "User not found"})
-	//		return err
-	//	}
-	//	user.Balance = user.Balance + newOrder.Accrual
-	//
-	//	if err := tx.Save(&newOrder).Error; err != nil {
-	//		return err
-	//	}
-	//	if err := tx.Save(&user).Error; err != nil {
-	//		return err
-	//	}
-	//
-	//	return nil
-	//})
 
 }

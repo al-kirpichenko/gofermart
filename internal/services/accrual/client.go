@@ -13,23 +13,6 @@ type Loyalty struct {
 	Accrual float64 `json:"accrual"`
 }
 
-//func GetLoyalty(orderNumber string, accrualAddress string) (*Loyalty, error) {
-//
-//	var (
-//		loyalty *Loyalty
-//		err     error
-//	)
-//
-//	for i := 0; i < 3; i++ {
-//		loyalty, err = Get(orderNumber, accrualAddress)
-//		if err == nil {
-//			return loyalty, nil
-//		}
-//		time.Sleep(time.Second * 2)
-//	}
-//	return nil, err
-//}
-
 func Get(orderNumber string, accrualAddress string) (*Loyalty, error) {
 
 	client := &http.Client{}
