@@ -19,9 +19,9 @@ const (
 	DBuser           = "postgres"
 	DBpassword       = "123"
 	DBname           = "postgres"
-	UpdateDuration   = time.Minute * 2
+	UpdateDuration   = time.Second * 10
 	ClientTimeout    = time.Second * 10
-	OrdersBatchNum   = 100
+	OrdersBatchNum   = 20
 	StatusNew        = "NEW"
 	StatusProcessing = "PROCESSING"
 	StatusRegistered = "REGISTERED"
